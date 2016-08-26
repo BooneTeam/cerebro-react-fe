@@ -10,10 +10,8 @@ Follow the instructions for your platform [here](https://github.com/npm/npm).
 npm install
 ````
 
-3. Boot the HTTP server
+3. Boot the HTTP server from the other repo at localhost 3000
 
 ````
-npm run server
-````
 
-The server is now running at [localhost:3000](localhost:3000)
+````

@@ -10,21 +10,25 @@ const CohortsDashboard = React.createClass({
     componentDidMount: function () {
         this.loadCohortsFromServer();
     },
-    setAnalyticView: function(type){
+    setAnalyticView: function (type) {
         this.setState({analyticView: type})
+        this.getActivitiesForAllCohorts();
     },
-    pickCohort: function(cohort){
-        this.setState({analyticView: 'students'})
-        console.log(cohort)
+    getActivitiesForAllCohorts: function () {
         let self = this;
-        client.getFurthestActivitiesByCohort({cohort: cohort},function(activities) {
-            console.log(activities)
-                self.setState({activities: _.groupBy(activities, '_user.email')})
-            })
+        client.getActivitiesByQuery({}, function (activities) {
+            self.setState({activities: _.groupBy(activities, 'cohort')})
+        })
+    },
+    pickCohort: function (cohort) {
+        this.setState({analyticView: 'students'})
+        let self = this;
+        client.getFurthestActivitiesByCohort({cohort: cohort}, function (activities) {
+            self.setState({activities: _.groupBy(activities, '_user.email')})
+        })
     },
     loadCohortsFromServer: function () {
         client.getFurthestActivities((activities) => {
-                // console.log(_.groupBy(activities, '_user.email')),
                 this.setState({activities: _.groupBy(activities, '_user.email')})
                 if (activities.length != this.state.activities.length) {
                     this.loadParticles();
@@ -71,8 +75,6 @@ const ActivityList = React.createClass({
     componentDidMount: function () {
         $('#content .person-data')
             .popup();
-        console.log('here!')
-        console.log(this.props.activities)
         // this.setState({activities: this.props.activities})
         // setInterval(() => {
         //     this.setGraphType(this.state.graphType, false)
@@ -87,13 +89,13 @@ const ActivityList = React.createClass({
     queryType: function (type, cb) {
         switch (type) {
             case 'line':
-                return cb(client.getActivitiesByPerson({_user: this.state.activities[0]._user._id}));
+                return cb(client.getActivitiesByPerson({_user: this.props.activities[0]._user._id}));
             case 'scale':
-                return cb(client.getActivitiesByPerson({_user: this.state.activities[0]._user._id}));
+                return cb(client.getActivitiesByPerson({_user: this.props.activities[0]._user._id}));
             case 'pie':
-                return cb(client.getActivitiesByPerson({_user: this.state.activities[0]._user._id}));
+                return cb(client.getActivitiesByPerson({_user: this.props.activities[0]._user._id}));
             case 'list':
-                return cb(client.getActivitiesByPerson({_user: this.state.activities[0]._user._id}));
+                return cb(client.getActivitiesByPerson({_user: this.props.activities[0]._user._id}));
         }
 
     },
@@ -107,7 +109,7 @@ const ActivityList = React.createClass({
     },
     setGraphType: function (type, triggeredByUser) {
         this.getNewStats(type, (activities)=> {
-            if (JSON.stringify(this.state.activities) != JSON.stringify(activities) || triggeredByUser) {
+            if (JSON.stringify(this.props.activities) != JSON.stringify(activities) || triggeredByUser) {
                 this.setState({graphType: type, activities: activities});
             }
 
@@ -117,7 +119,7 @@ const ActivityList = React.createClass({
     render: function () {
 
 
-        const activities = this.state.activities.map((activity) => (
+        const activities = this.props.activities.map((activity) => (
             <Activity
                 key={activity._id}
                 type={activity.activity_type}
@@ -130,7 +132,7 @@ const ActivityList = React.createClass({
             <ActivityGraph
                 key={ this.props.person}
                 id={ this.props.person}
-                activities={this.state.activities}
+                activities={this.props.activities}
                 user={ this.props.person|| {email: 'unknown'}}
             />;
 
@@ -138,7 +140,7 @@ const ActivityList = React.createClass({
             <DoughnutGraph
                 key={ this.props.person}
                 id={ this.props.person}
-                activities={this.state.activities}
+                activities={this.props.activities}
                 user={ this.props.person|| {email: 'unknown'}}
             />;
 
@@ -147,7 +149,7 @@ const ActivityList = React.createClass({
             <ColorScale
                 key={ this.props.person}
                 id={ this.props.person}
-                activities={this.state.activities}
+                activities={this.props.activities}
                 user={ this.props.person|| {email: 'unknown'}}
             />;
 
@@ -156,7 +158,7 @@ const ActivityList = React.createClass({
                 <div key={this.props.person} className="column">
                     <UserActivityGraphsHeader setGraphType={this.setGraphType}
                                               person={this.props.person}
-                                              activities={this.state.activities}/>
+                                              activities={this.props.activities}/>
                     <div>{doughnutGraph}</div>
                 </div>
             )
@@ -165,7 +167,7 @@ const ActivityList = React.createClass({
                 <div key={this.props.person} className="column">
                     <UserActivityGraphsHeader setGraphType={this.setGraphType}
                                               person={this.props.person}
-                                              activities={this.state.activities}/>
+                                              activities={this.props.activities}/>
                     <div>{activitiesGraph}</div>
                 </div>)
         } else if (this.state.graphType == 'scale') {
@@ -173,7 +175,7 @@ const ActivityList = React.createClass({
                 <div key={this.props.person} className="column">
                     <UserActivityGraphsHeader setGraphType={this.setGraphType}
                                               person={this.props.person}
-                                              activities={this.state.activities}/>
+                                              activities={this.props.activities}/>
                     <div>{colorScaleGraph}</div>
                 </div>)
         } else {
@@ -181,7 +183,7 @@ const ActivityList = React.createClass({
                 <div key={this.props.person} className="column">
                     <UserActivityGraphsHeader setGraphType={this.setGraphType}
                                               person={this.props.person}
-                                              activities={this.state.activities}/>
+                                              activities={this.props.activities}/>
                     <table className="ui attached segment celled striped table column">
                         <thead>
                         </thead>
@@ -201,13 +203,10 @@ const DoughnutGraph = React.createClass({
         return {name: 'doughnut'}
     },
     renderD3: function (id) {
-        console.log(id)
         let dataSet = _.groupBy(this.props.activities, 'activity_type');
         let dataSetData = _.map(dataSet, function (obj) {
             return obj.length
         });
-        console.log(_.keys(dataSet));
-        console.log(dataSetData)
         let data = {
             labels: _.keys(dataSet),
             datasets: [
@@ -226,7 +225,6 @@ const DoughnutGraph = React.createClass({
                 }]
         };
         let ctx = document.getElementById(id);
-        console.log(id + '  is the id')
         let myDoughnutChart = new Chart(ctx, {
             type: 'doughnut',
             data: data,
@@ -252,7 +250,6 @@ const DoughnutGraph = React.createClass({
 const UserActivityGraphsHeader = React.createClass({
     componentDidMount(){
 
-        // console.log(example)
     },
     render: function () {
 
@@ -262,9 +259,6 @@ const UserActivityGraphsHeader = React.createClass({
                  data-content={this.props.activities.length + " challenges"}>
                 <h2>{this.props.person}</h2>
                 <div className="ui icon buttons">
-                    <button className="ui button inverted blue " onClick={() => this.props.setGraphType('area',true)}>
-                        <i
-                            className="area chart icon"></i></button>
                     <button className="ui button inverted blue " onClick={() => this.props.setGraphType('scale',true)}>
                         <i
                             className="bar chart icon"></i></button>
@@ -290,13 +284,11 @@ const ColorScale = React.createClass({
             name: 'scale'
         }
     },
-    componentDidUpdate: function () {
-    },
+    // componentDidUpdate: function () {
+    // },
     componentDidMount: function () {
         $('#content .challenge-block')
             .popup();
-
-        //
         let data = this.props.activities;
 
         let total = data.length;
@@ -341,13 +333,11 @@ const ColorScale = React.createClass({
                 this.state.color = 'yellow';
         }
 
-        console.log(this.state.color)
 
-        const blocks = _.map(data, function (group, key) {
-            return (<ChallengeBlock key={group.repo} repo={group.repo} activity_type={group.activity_type}/>
+        const blocks = _.map(data, (group, key) => {
+            return (<ChallengeBlock key={group.repo + key} repo={group.repo} activity_type={group.activity_type}/>
             )
         });
-        console.log(this.props.user)
         return (
             <div>
                 {blocks}
@@ -399,7 +389,6 @@ const ActivityGraph = React.createClass({
         return {name: 'line'}
     },
     renderD3: function (id) {
-        console.log(id)
 
         let data = this.props.activities;
         let ctx = document.getElementById(id);
@@ -467,7 +456,6 @@ const ActivityGraph = React.createClass({
         this.renderD3(this.props.id + this.state.name);
     },
     render: function () {
-        console.log(<div>{this.props.id + this.state.name}</div>)
         return (<canvas id={this.props.id + this.state.name}></canvas>)
     }
 });
@@ -478,7 +466,6 @@ const Activity = React.createClass({
     },
     getIcon: function () {
         let icon;
-        console.log(this.props.type)
         switch (this.props.type) {
             case 'completed':
                 icon = <i className="fa fa-check" aria-hidden="true"></i>
@@ -511,7 +498,7 @@ const Activity = React.createClass({
 });
 
 const RangeDatePicker = React.createClass({
-    componentDidMount:function(){
+    componentDidMount: function () {
         $('#rangestart').calendar({
             type: 'date',
             endCalendar: $('#rangeend')
@@ -530,7 +517,7 @@ const RangeDatePicker = React.createClass({
                         <div className="field">
                             <label>Start date</label>
                             <div className="ui calendar" id="rangestart">
-                                <div className="ui input left icon">
+                                <div className="ui inverted input left icon">
                                     <i className="calendar icon"></i>
                                     <input type="text" placeholder="Start"></input>
                                 </div>
@@ -539,7 +526,7 @@ const RangeDatePicker = React.createClass({
                         <div className="field">
                             <label>End date</label>
                             <div className="ui calendar" id="rangeend">
-                                <div className="ui input left icon">
+                                <div className="ui inverted input left icon">
                                     <i className="calendar icon"></i>
                                     <input type="text" placeholder="End"></input>
                                 </div>
@@ -553,12 +540,12 @@ const RangeDatePicker = React.createClass({
 });
 
 const CohortPicker = React.createClass({
-    getInitialState: function(){
+    getInitialState: function () {
         return {
             content: [{title: 'aus-red-pandas-2016'}, {title: 'aus-squirrels-2016'}]
         }
     },
-    componentDidMount: function(){
+    componentDidMount: function () {
         $('.ui.search')
             .search({
                 source: this.state.content,
@@ -567,39 +554,46 @@ const CohortPicker = React.createClass({
                 )
             })
     },
-    render: function(){
-      return(
-          <div className="ui search">
-            <div className="ui icon input">
-                <input className="prompt" type="text" placeholder="Search countries..."></input>
-                <i className="search icon"></i>
-            </div>
-            <div className="results"></div>
-        </div>)
+    render: function () {
+        return (
+            <div className="ui search">
+                <div className="ui icon input">
+                    <input className="prompt" type="text" placeholder="Search Cohorts"></input>
+                    <i className="search icon"></i>
+                </div>
+                <div className="ui column center aligned">
+                <div className="results"></div>
+                </div>
+            </div>)
     }
 });
 
 const DisplayOptionsMenu = React.createClass({
-    getInitialState: function(){
+    getInitialState: function () {
         return {
-            isOpen:false,
+            isOpen: false,
         }
     },
-    toggleCohortView: function(){
+    toggleCohortView: function () {
         this.props.setAnalyticViewType('cohort')
     },
-    toggleSettings: function(){
-      this.setState({ isOpen:!this.state.isOpen })
+    toggleSettings: function () {
+        this.setState({isOpen: !this.state.isOpen})
     },
     render: function () {
         return (
-            <div>
-                <button className="ui inverted button"><i onClick={this.toggleSettings} className="settings icon"></i></button>
-                <button className="ui inverted button"><i onClick={this.toggleCohortView} className="cubes icon"></i></button>
-            <div style={{display: this.state.isOpen ? '' : 'none'}}>
-                <CohortPicker pickCohort={this.props.pickCohort}/>
-            <RangeDatePicker />
-        </div></div> )
+            <div className="ui two column centered grid" >
+                <div className="ui segment inverted column center aligned " id="options-menu">
+                    <button className="ui violet inverted button"><i onClick={this.toggleSettings}
+                                                              className="settings icon"></i></button>
+                    <button className="ui teal inverted button"><i onClick={this.toggleCohortView}
+                                                              className="cubes icon"></i></button>
+                    <div id="inner-menu-options" style={{display: this.state.isOpen ? '' : 'none'}}>
+                        <CohortPicker pickCohort={this.props.pickCohort}/>
+                        <RangeDatePicker />
+                    </div>
+                </div>
+            </div>)
     }
 });
 
