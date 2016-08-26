@@ -1,0 +1,92 @@
+body{
+    background:black;
+    font-family: 'Orbitron', sans-serif;
+}
+
+#main {
+    /*margin-top: 0em;*/
+    /*height:100%*/
+}
+
+#content {
+    padding-top: 3em;
+}
+
+#particles-js {
+    width:100%;
+    height:100%;
+    position: absolute;
+    background-color:transparent;
+    background-image: url("");
+    background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: repeat;
+}
+
+.grid .column{
+    margin-top:1em;
+}
+
+#title {
+    font-family: 'Orbitron', sans-serif;
+    font-style: bold;
+    color:cadetblue;
+    display:run-in;
+}
+
+#title-img{
+    height: 100px;
+}
+
+#person-data{
+    box-shadow: 0px -1px 2px -1px gold;
+    background:none;
+}
+
+#person-data h2{
+    color:lightgreen;
+    font-family: 'Orbitron', sans-serif;
+}
+
+#progbar{
+    display: block; width: 573px; height: 285px;
+}
+
+
+.challenge-block{
+    display:inline-block;
+    height: 3em;
+    width: 3em;
+    border:black solid thin;
+}
+
+.challenge-block:hover{
+    height: 3.1em;
+    width: 3.1em;
+    box-shadow: .5px .5px 1px 1px cyan;
+}
+
+.completed-block{
+    background-color: chartreuse;
+}
+.blocked-block{
+    background-color: darkred;
+}
+.started-block{
+    background-color: goldenrod;
+}
+.default-block{
+    background-color: darkslategrey;
+}
+
+
+.ui.progress.block-progress{
+    background:rgba(255, 255, 255, 0.19);
+    margin:auto;
+    margin-top:20%;
+    max-width:65%
+}
+
+.ui.inverted.progress .bar>.progress.label{
+    color:black;
+}

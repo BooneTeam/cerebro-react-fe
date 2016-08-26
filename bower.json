@@ -1,0 +1,21 @@
+{
+  "name": "cerebro-react-fe",
+  "description": "",
+  "main": "app.js",
+  "authors": [
+    "Garrett Boone"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "particles.js": "^2.0.0"
+  }
+}
