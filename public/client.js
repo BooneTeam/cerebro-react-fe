@@ -36,6 +36,18 @@ window.client = (function () {
         .then(parseJSON)
         .then(success)
   }
+  
+  function getCohorts(data,success){
+    var query = $.param( data );
+    return fetch('http://localhost:9000/api/activities/cohorts' + query, {
+      method:'get',
+      headers: {
+        Accept: 'application/json',
+      },
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(success)
+  }
 
   function getFurthestActivitiesByCohort(data,success){
 
@@ -134,6 +146,7 @@ window.client = (function () {
 
   return {
     getActivities,
+    getCohorts,
     getActivitiesByQuery,
     getFurthestActivitiesByCohort,
     getActivitiesByPerson,

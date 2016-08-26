@@ -91,6 +91,11 @@ body{
     color:black;
 }
 
+.ui.selection.dropdown{
+    color:white;
+    background:rgba(109, 255, 255, .2);
+}
+
 #options-menu{
     background:transparent;
 }
@@ -101,8 +106,10 @@ body{
 
 
 #content input{
+    color:white;
     background:rgba(109, 255, 255, .2);
 }
+
 
 #content .input i{
     color:white;
@@ -122,4 +129,17 @@ body{
 #content :-ms-input-placeholder { /* Internet Explorer 10-11 */
     color:    white;
 }
+#phase-option-btn{
+    margin-top:1em;
+}
+
+
+#content .ui.inverted.button#settings-button,#cohorts-button{
+    box-shadow: 0 0 0 2px #54C8FF !important;
+    color:#54C8FF;
+    background:transparent;
+}
+
+#content .ui.inverted.button#settings-button:focus,#cohorts-button:focus{
+    background:rgba(88,88,88,.5)
 }

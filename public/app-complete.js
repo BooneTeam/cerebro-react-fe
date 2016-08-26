@@ -4,8 +4,38 @@ const CohortsDashboard = React.createClass({
         return {
             activities: [],
             particlesLoaded: false,
-            analyticView: 'cohort'
+            analyticView: 'cohort',
+            selectedCohort: false,
+            phase: false,
+            week: false,
+            day: false,
+
         }
+    },
+
+    updateAnalytics: function () {
+        let options = {
+            phase: this.state.phase,
+            week: this.state.week,
+            day: this.state.day,
+            cohort: this.state.selectedCohort
+        };
+        let readyOptions = _.pickBy(options, _.identity);
+        console.log(options);
+        client.getActivitiesByQuery(readyOptions, (activities) => {
+            if (this.state.analyticView == 'cohort') {
+                this.setState({activities: _.groupBy(activities, 'cohort')})
+            } else {
+                this.setState({activities: _.groupBy(activities, '_user.email')})
+            }
+
+        });
+        console.log(this.state)
+    },
+    pickPhaseDay: function (phaseOptions) {
+        this.setState({phase: phaseOptions.phase, week: phaseOptions.phaseWeek, day: phaseOptions.phaseDay})
+        this.updateAnalytics();
+        console.log(this.state)
     },
     componentDidMount: function () {
         this.loadCohortsFromServer();
@@ -15,17 +45,12 @@ const CohortsDashboard = React.createClass({
         this.getActivitiesForAllCohorts();
     },
     getActivitiesForAllCohorts: function () {
-        let self = this;
-        client.getActivitiesByQuery({}, function (activities) {
-            self.setState({activities: _.groupBy(activities, 'cohort')})
-        })
+        this.setState({analyticView: 'cohort', selectedCohort: false});
+        this.updateAnalytics();
     },
     pickCohort: function (cohort) {
-        this.setState({analyticView: 'students'})
-        let self = this;
-        client.getFurthestActivitiesByCohort({cohort: cohort}, function (activities) {
-            self.setState({activities: _.groupBy(activities, '_user.email')})
-        })
+        this.setState({analyticView: 'students', selectedCohort: cohort});
+        this.updateAnalytics();
     },
     loadCohortsFromServer: function () {
         client.getFurthestActivities((activities) => {
@@ -47,15 +72,18 @@ const CohortsDashboard = React.createClass({
     },
     render: function () {
         const lists = [];
+        let i = 0
         _.forIn(this.state.activities, (activities, person) => (
+            i+=1,
             lists.push(
-                <ActivityList key={person} activities={activities}
+                <ActivityList key={person} activities={activities} el_id={i}
                               user={activities[0]._user} person={person}
                 />)
         ));
         return (
             <div>
-                <DisplayOptionsMenu setAnalyticViewType={this.setAnalyticView} pickCohort={this.pickCohort}/>
+                <DisplayOptionsMenu pickPhaseDay={this.pickPhaseDay} setAnalyticViewType={this.setAnalyticView}
+                                    pickCohort={this.pickCohort}/>
                 {this.state.analyticView}
                 <div className="ui three column doubling stackable grid" style={{margin:'auto'}}>
                     {lists}
@@ -68,23 +96,13 @@ const CohortsDashboard = React.createClass({
 const ActivityList = React.createClass({
     getInitialState: function () {
         return {
-            graphType: 'line',
+            graphType: 'scale',
             activities: []
         }
     },
     componentDidMount: function () {
         $('#content .person-data')
             .popup();
-        // this.setState({activities: this.props.activities})
-        // setInterval(() => {
-        //     this.setGraphType(this.state.graphType, false)
-        // }, 5000);
-
-        // client.getFurthestActivities((activities) => {
-        //         var newactivities = _.groupBy(activities, '_user.email');
-        //         this.setState({activities: newactivities[this.props.person]})
-        //     }
-        // )
     },
     queryType: function (type, cb) {
         switch (type) {
@@ -131,7 +149,7 @@ const ActivityList = React.createClass({
         const activitiesGraph =
             <ActivityGraph
                 key={ this.props.person}
-                id={ this.props.person}
+                id={ this.props.el_id}
                 activities={this.props.activities}
                 user={ this.props.person|| {email: 'unknown'}}
             />;
@@ -139,16 +157,16 @@ const ActivityList = React.createClass({
         const doughnutGraph =
             <DoughnutGraph
                 key={ this.props.person}
-                id={ this.props.person}
+                id={ this.props.el_id}
                 activities={this.props.activities}
                 user={ this.props.person|| {email: 'unknown'}}
             />;
 
-
+        console.log(this.props)
         const colorScaleGraph =
             <ColorScale
                 key={ this.props.person}
-                id={ this.props.person}
+                id={ this.props.el_id}
                 activities={this.props.activities}
                 user={ this.props.person|| {email: 'unknown'}}
             />;
@@ -284,18 +302,16 @@ const ColorScale = React.createClass({
             name: 'scale'
         }
     },
-    // componentDidUpdate: function () {
-    // },
-    componentDidMount: function () {
-        $('#content .challenge-block')
-            .popup();
+    componentDidUpdate: function () {
+        this.updateBlocks();
+    },
+    updateBlocks: function(){
         let data = this.props.activities;
 
         let total = data.length;
         let completed = _.filter(data, {activity_type: 'completed'}).length;
-        let progress = $('.ui.progress');
+        let progress = $('.challenge-block-container#' + this.props.id + ' .ui.progress');
         let percent = (completed / data.length) * 100;
-
         progress.progress('reset');
         progress.progress({
             percent: percent,
@@ -309,6 +325,12 @@ const ColorScale = React.createClass({
                 ratio: '{value} of {total}'
             }
         });
+    },
+    componentDidMount: function () {
+        console.log(this.props.id)
+        $('#content .challenge-block')
+            .popup();
+        this.updateBlocks();
 
 
     },
@@ -339,7 +361,7 @@ const ColorScale = React.createClass({
             )
         });
         return (
-            <div>
+            <div className='challenge-block-container' id={this.props.id} >
                 {blocks}
                 <div className={"ui " + this.state.color + " inverted progress block-progress"}>
                     <div className="bar">
@@ -510,8 +532,9 @@ const RangeDatePicker = React.createClass({
     },
     render: function () {
         return (
-            <div >
-                <h3>Date Range</h3>
+            <div style={{marginTop: '1em' }}>
+                <h4>OR</h4>
+                <h4>Search by Date Range</h4>
                 <div className="ui form">
                     <div className="two fields">
                         <div className="field">
@@ -542,29 +565,171 @@ const RangeDatePicker = React.createClass({
 const CohortPicker = React.createClass({
     getInitialState: function () {
         return {
-            content: [{title: 'aus-red-pandas-2016'}, {title: 'aus-squirrels-2016'}]
+            content: []
         }
     },
     componentDidMount: function () {
-        $('.ui.search')
-            .search({
-                source: this.state.content,
-                onSelect: (chosen) => (
-                    this.props.pickCohort(chosen.title)
-                )
+        // [{title: 'aus-red-pandas-2016'}, {title: 'aus-squirrels-2016'}]
+        client.getCohorts({}, (cohorts) => {
+
+            this.setState({
+                content: cohorts.map(function (cohort) {
+                    return {title: cohort}
+                })
             })
+            console.log(this.state.content)
+
+            $('.ui.search#cohort-search')
+                .search({
+                    source: this.state.content,
+                    onSelect: (chosen) => (
+                        this.props.pickCohort(chosen.title)
+                    )
+                })
+
+
+            $('.ui.search#cohort-search input').blur((event) => {
+                let value = $(event.currentTarget).val();
+                if (value == '') {
+                    this.props.pickCohort('');
+                }
+            })
+
+        });
     },
     render: function () {
         return (
-            <div className="ui search">
+            <div className="ui search" id="cohort-search">
                 <div className="ui icon input">
                     <input className="prompt" type="text" placeholder="Search Cohorts"></input>
                     <i className="search icon"></i>
                 </div>
                 <div className="ui column center aligned">
-                <div className="results"></div>
+                    <div className="results"></div>
                 </div>
             </div>)
+    }
+});
+
+
+const PhaseWeekDayPicker = React.createClass({
+    getInitialState: function () {
+        return {
+            content: [
+                {title: 'Phase 1 - Week 1 - Day 1', params: '1-1-1'},
+                {title: 'Phase 1 - Week 1 - Day 2', params: '1-1-2'},
+                {title: 'Phase 1 - Week 1 - Day 3', params: '1-1-3'},
+                {title: 'Phase 1 - Week 1 - Day 4', params: '1-1-4'},
+                {title: 'Phase 1 - Week 1 - Day 5', params: '1-1-5'},
+                {title: 'Phase 1 - Week 2 - Day 1', params: '1-2-1'},
+                {title: 'Phase 1 - Week 2 - Day 2', params: '1-2-2'},
+                {title: 'Phase 1 - Week 2 - Day 3', params: '1-2-3'},
+                {title: 'Phase 1 - Week 2 - Day 4', params: '1-2-4'},
+                {title: 'Phase 1 - Week 2 - Day 5', params: '1-2-5'},
+                {title: 'Phase 1 - Week 3 - Day 1', params: '1-3-1'},
+                {title: 'Phase 1 - Week 3 - Day 2', params: '1-3-2'},
+                {title: 'Phase 1 - Week 3 - Day 3', params: '1-3-3'},
+                {title: 'Phase 1 - Week 3 - Day 4', params: '1-3-4'},
+                {title: 'Phase 1 - Week 3 - Day 5', params: '1-3-5'},
+
+                {title: 'Phase 2 - Week 1 - Day 1', params: '2-1-1'},
+                {title: 'Phase 2 - Week 1 - Day 2', params: '2-1-2'},
+                {title: 'Phase 2 - Week 1 - Day 3', params: '2-1-3'},
+                {title: 'Phase 2 - Week 1 - Day 4', params: '2-1-4'},
+                {title: 'Phase 2 - Week 1 - Day 5', params: '2-1-5'},
+                {title: 'Phase 2 - Week 2 - Day 1', params: '2-2-1'},
+                {title: 'Phase 2 - Week 2 - Day 2', params: '2-2-2'},
+                {title: 'Phase 2 - Week 2 - Day 3', params: '2-2-3'},
+                {title: 'Phase 2 - Week 2 - Day 4', params: '2-2-4'},
+                {title: 'Phase 2 - Week 2 - Day 5', params: '2-2-5'},
+                {title: 'Phase 2 - Week 3 - Day 1', params: '2-3-1'},
+                {title: 'Phase 2 - Week 3 - Day 2', params: '2-3-2'},
+                {title: 'Phase 2 - Week 3 - Day 3', params: '2-3-3'},
+                {title: 'Phase 2 - Week 3 - Day 4', params: '2-3-4'},
+                {title: 'Phase 2 - Week 3 - Day 5', params: '2-3-5'},
+
+                {title: 'Phase 3 - Week 1 - Day 1', params: '3-1-1'},
+                {title: 'Phase 3 - Week 1 - Day 2', params: '3-1-2'},
+                {title: 'Phase 3 - Week 1 - Day 3', params: '3-1-3'},
+                {title: 'Phase 3 - Week 1 - Day 4', params: '3-1-4'},
+                {title: 'Phase 3 - Week 1 - Day 5', params: '3-1-5'},
+                {title: 'Phase 3 - Week 2 - Day 1', params: '3-2-1'},
+                {title: 'Phase 3 - Week 2 - Day 2', params: '3-2-2'},
+                {title: 'Phase 3 - Week 2 - Day 3', params: '3-2-3'},
+                {title: 'Phase 3 - Week 2 - Day 4', params: '3-2-4'},
+                {title: 'Phase 3 - Week 2 - Day 5', params: '3-2-5'},
+                {title: 'Phase 3 - Week 3 - Day 1', params: '3-3-1'},
+                {title: 'Phase 3 - Week 3 - Day 2', params: '3-3-2'},
+                {title: 'Phase 3 - Week 3 - Day 3', params: '3-3-3'},
+                {title: 'Phase 3 - Week 3 - Day 4', params: '3-3-4'},
+                {title: 'Phase 3 - Week 3 - Day 5', params: '3-3-5'},
+
+
+            ]
+        }
+    },
+    componentDidMount: function () {
+
+        let self = this;
+
+        $('.ui.dropdown')
+            .dropdown()
+            .change(function () {
+                let stateObj = {};
+                let attr = $(this).find('input').attr('name');
+                stateObj[attr] = $(this).find('input').val();
+                self.setState(stateObj);
+                self.submitPhaseOptions();
+            });
+
+
+    },
+    submitPhaseOptions: function () {
+        let options = {phase: this.state.phase, phaseDay: this.state.phaseDay, phaseWeek: this.state.phaseWeek}
+
+        this.props.pickPhaseDay(options)
+    },
+    render: function () {
+        return (
+            <div>
+                <div className="ui selection dropdown" id="phase">
+                    <input type="hidden" ref="phase" name="phase"></input>
+                    <i className="dropdown icon"></i>
+                    <div className="default text">Phase</div>
+                    <div className="menu">
+                        <div className="item" data-value="1">ONE</div>
+                        <div className="item" data-value="2">TWO</div>
+                        <div className="item" data-value="3">THREE</div>
+                    </div>
+                </div>
+
+                <div className="ui selection dropdown" id="phaseWeek">
+                    <input type="hidden" ref="phase-week" name="phaseWeek"></input>
+                    <i className="dropdown icon"></i>
+                    <div className="default text">Week</div>
+                    <div className="menu">
+                        <div className="item" data-value="1">ONE</div>
+                        <div className="item" data-value="2">TWO</div>
+                        <div className="item" data-value="3">THREE</div>
+                    </div>
+                </div>
+
+                <div className="ui selection dropdown" id="phaseDay">
+                    <input type="hidden" ref="phase-day" name="phaseDay"></input>
+                    <i className="dropdown icon"></i>
+                    <div className="default text">Day</div>
+                    <div className="menu">
+                        <div className="item" data-value="1">ONE</div>
+                        <div className="item" data-value="2">TWO</div>
+                        <div className="item" data-value="3">THREE</div>
+                        <div className="item" data-value="3">FOUR</div>
+                        <div className="item" data-value="3">FIVE</div>
+                    </div>
+                </div>
+
+                <br></br>
+            </div>
+        )
     }
 });
 
@@ -582,14 +747,16 @@ const DisplayOptionsMenu = React.createClass({
     },
     render: function () {
         return (
-            <div className="ui two column centered grid" >
+            <div className="ui two column centered grid">
                 <div className="ui segment inverted column center aligned " id="options-menu">
-                    <button className="ui violet inverted button"><i onClick={this.toggleSettings}
-                                                              className="settings icon"></i></button>
-                    <button className="ui teal inverted button"><i onClick={this.toggleCohortView}
-                                                              className="cubes icon"></i></button>
+                    <button id='settings-button' className="ui inverted button"><i onClick={this.toggleSettings}
+                                                                                   className="settings icon"></i>
+                    </button>
+                    <button id='cohorts-button' className="ui inverted button"><i onClick={this.toggleCohortView}
+                                                                                  className="cubes icon"></i></button>
                     <div id="inner-menu-options" style={{display: this.state.isOpen ? '' : 'none'}}>
                         <CohortPicker pickCohort={this.props.pickCohort}/>
+                        <PhaseWeekDayPicker pickPhaseDay={this.props.pickPhaseDay}/>
                         <RangeDatePicker />
                     </div>
                 </div>
