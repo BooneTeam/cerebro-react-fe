@@ -90,3 +90,36 @@ body{
 .ui.inverted.progress .bar>.progress.label{
     color:black;
 }
+
+#options-menu{
+    background:transparent;
+}
+
+#inner-menu-options{
+    padding:1em;
+}
+
+
+#content input{
+    background:rgba(109, 255, 255, .2);
+}
+
+#content .input i{
+    color:white;
+}
+
+#content ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    white;
+}
+#content :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:    white;
+    opacity:  1;
+}
+#content ::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:    white;
+    opacity:  1;
+}
+#content :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color:    white;
+}
+}

@@ -24,6 +24,19 @@ window.client = (function () {
         .then(success)
   }
 
+  function getActivitiesByQuery(data,success){
+
+    var query = $.param( data );
+    return fetch('http://localhost:9000/api/activities?' + query, {
+      method:'get',
+      headers: {
+        Accept: 'application/json',
+      },
+    }).then(checkStatus)
+        .then(parseJSON)
+        .then(success)
+  }
+
   function getFurthestActivitiesByCohort(data,success){
 
     var query = $.param( data );
@@ -121,6 +134,7 @@ window.client = (function () {
 
   return {
     getActivities,
+    getActivitiesByQuery,
     getFurthestActivitiesByCohort,
     getActivitiesByPerson,
     getFurthestActivities,
