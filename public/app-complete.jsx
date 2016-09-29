@@ -1,110 +1,25 @@
-const CohortsDashboard = React.createClass({
-    getInitialState: function () {
+var client = require('./client');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-        return {
-            activities: [],
-            particlesLoaded: false,
-            analyticView: 'cohort',
-            selectedCohort: false,
-            phase: false,
-            week: false,
-            day: false,
-
-        }
-    },
-
-    updateAnalytics: function () {
-        let options = {
-            phase: this.state.phase,
-            week: this.state.week,
-            day: this.state.day,
-            cohort: this.state.selectedCohort
-        };
-        let readyOptions = _.pickBy(options, _.identity);
-        console.log(options);
-        client.getActivitiesByQuery(readyOptions, (activities) => {
-            if (this.state.analyticView == 'cohort') {
-                this.setState({activities: _.groupBy(activities, 'cohort')})
-            } else {
-                this.setState({activities: _.groupBy(activities, '_user.email')})
-            }
-
-        });
-        console.log(this.state)
-    },
-    pickPhaseDay: function (phaseOptions) {
-        this.setState({phase: phaseOptions.phase, week: phaseOptions.phaseWeek, day: phaseOptions.phaseDay})
-        this.updateAnalytics();
-        console.log(this.state)
-    },
-    componentDidMount: function () {
-        this.loadCohortsFromServer();
-    },
-    setAnalyticView: function (type) {
-        this.setState({analyticView: type})
-        this.getActivitiesForAllCohorts();
-    },
-    getActivitiesForAllCohorts: function () {
-        this.setState({analyticView: 'cohort', selectedCohort: false});
-        this.updateAnalytics();
-    },
-    pickCohort: function (cohort) {
-        this.setState({analyticView: 'students', selectedCohort: cohort});
-        this.updateAnalytics();
-    },
-    loadCohortsFromServer: function () {
-        client.getFurthestActivities((activities) => {
-                this.setState({activities: _.groupBy(activities, '_user.email')})
-                if (activities.length != this.state.activities.length) {
-                    this.loadParticles();
-                }
-            }
-        )
-    },
-    loadParticles: function () {
-        /* particlesJS.load(@dom-id, @path-json, @callback (optional)); */
-        if (!this.state.particlesLoaded) {
-            particlesJS.load('particles-js', 'assets/particles.json', function () {
-                console.log('callback - particles.js config loaded');
-            });
-            this.setState({particlesLoaded: true})
-        }
-    },
-    render: function () {
-        const lists = [];
-        let i = 0
-        _.forIn(this.state.activities, (activities, person) => (
-            i+=1,
-            lists.push(
-                <ActivityList key={person} activities={activities} el_id={i}
-                              user={activities[0]._user} person={person}
-                />)
-        ));
-        return (
-            <div>
-                <DisplayOptionsMenu pickPhaseDay={this.pickPhaseDay} setAnalyticViewType={this.setAnalyticView}
-                                    pickCohort={this.pickCohort}/>
-                {this.state.analyticView}
-                <div className="ui three column doubling stackable grid" style={{margin:'auto'}}>
-                    {lists}
-                </div>
-            </div>)
-
-    }
-});
-
-const ActivityList = React.createClass({
-    getInitialState: function () {
-        return {
+class ActivityList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             graphType: 'scale',
             activities: []
-        }
-    },
-    componentDidMount: function () {
+        };
+        this.getNewStats  = this.getNewStats.bind(this);
+        this.setGraphType = this.setGraphType.bind(this);
+        this.queryType    = this.queryType.bind(this);
+    }
+
+    componentDidMount() {
         $('#content .person-data')
             .popup();
-    },
-    queryType: function (type, cb) {
+    }
+
+    queryType(type, cb) {
         switch (type) {
             case 'line':
                 return cb(client.getActivitiesByPerson({_user: this.props.activities[0]._user._id}));
@@ -116,27 +31,26 @@ const ActivityList = React.createClass({
                 return cb(client.getActivitiesByPerson({_user: this.props.activities[0]._user._id}));
         }
 
-    },
-    getNewStats: function (type, cb) {
+    }
+
+    getNewStats(type, cb) {
         this.queryType(type, (data) => {
                 data.then(function (activities) {
                     cb(activities);
                 })
             }
         )
-    },
-    setGraphType: function (type, triggeredByUser) {
+    }
+
+    setGraphType(type, triggeredByUser){
         this.getNewStats(type, (activities)=> {
             if (JSON.stringify(this.props.activities) != JSON.stringify(activities) || triggeredByUser) {
                 this.setState({graphType: type, activities: activities});
             }
-
         })
+    };
 
-    },
-    render: function () {
-
-
+    render() {
         const activities = this.props.activities.map((activity) => (
             <Activity
                 key={activity._id}
@@ -162,7 +76,7 @@ const ActivityList = React.createClass({
                 user={ this.props.person|| {email: 'unknown'}}
             />;
 
-        console.log(this.props)
+
         const colorScaleGraph =
             <ColorScale
                 key={ this.props.person}
@@ -212,15 +126,19 @@ const ActivityList = React.createClass({
                 </div>
             )
         }
-    },
-});
+    }
+}
+;
 
-const DoughnutGraph = React.createClass({
-    getInitialState: function () {
-        console.log('in a doignut')
-        return {name: 'doughnut'}
-    },
-    renderD3: function (id) {
+class DoughnutGraph extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: 'doughnut'
+        };
+    }
+
+    renderD3(id) {
         let dataSet = _.groupBy(this.props.activities, 'activity_type');
         let dataSetData = _.map(dataSet, function (obj) {
             return obj.length
@@ -247,30 +165,34 @@ const DoughnutGraph = React.createClass({
             type: 'doughnut',
             data: data,
         });
-    },
-    componentDidUpdate: function () {
+    }
+
+    componentDidUpdate() {
         this.renderD3(this.props.id + this.state.name);
-    },
-    componentDidMount: function () {
+    }
+
+    componentDidMount() {
         this.renderD3(this.props.id + this.state.name);
-    },
-    render: function () {
-        console.log(this.props.id)
-        console.log(this.state.name)
+    }
+
+    render() {
+
+
         return (<canvas id={this.props.id + this.state.name}></canvas>)
 
         // this.renderD3(this.props.id + this.state.name)
         // Probably should check if canvas with id is on the page before just returning null
 
     }
-});
+}
+;
 
-const UserActivityGraphsHeader = React.createClass({
-    componentDidMount(){
+class UserActivityGraphsHeader extends React.Component {
+    componentDidMount() {
 
-    },
-    render: function () {
+    }
 
+    render() {
         return (
             <div id="person-data" className="ui top attached header person-data inverted"
                  data-title={this.props.person}
@@ -294,18 +216,22 @@ const UserActivityGraphsHeader = React.createClass({
 
         )
     }
-});
+}
+;
 
-const ColorScale = React.createClass({
-    getInitialState: function () {
-        return {
+class ColorScale extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             name: 'scale'
-        }
-    },
-    componentDidUpdate: function () {
+        };
+    }
+
+    componentDidUpdate() {
         this.updateBlocks();
-    },
-    updateBlocks: function(){
+    }
+
+    updateBlocks() {
         let data = this.props.activities;
 
         let total = data.length;
@@ -325,16 +251,18 @@ const ColorScale = React.createClass({
                 ratio: '{value} of {total}'
             }
         });
-    },
-    componentDidMount: function () {
-        console.log(this.props.id)
+    }
+
+    componentDidMount() {
+
         $('#content .challenge-block')
             .popup();
         this.updateBlocks();
 
 
-    },
-    render: function () {
+    }
+
+    render() {
 
         let data = this.props.activities;
 
@@ -361,7 +289,7 @@ const ColorScale = React.createClass({
             )
         });
         return (
-            <div className='challenge-block-container' id={this.props.id} >
+            <div className='challenge-block-container' id={this.props.id}>
                 {blocks}
                 <div className={"ui " + this.state.color + " inverted progress block-progress"}>
                     <div className="bar">
@@ -374,10 +302,11 @@ const ColorScale = React.createClass({
         )
 
     }
-});
+}
+;
 
-const ChallengeBlock = React.createClass({
-    blockColor: function () {
+class ChallengeBlock extends React.Component {
+    blockColor() {
         let color;
         switch (this.props.activity_type) {
             case 'completed':
@@ -394,23 +323,29 @@ const ChallengeBlock = React.createClass({
                 break;
         }
         return color
-    },
-    render: function () {
+    }
+
+    render() {
         return (  <div className={"challenge-block " + this.blockColor() }
                        data-title={this.props.repo}
                        data-content={this.props.activity_type}
         >
         </div>)
     }
-});
+}
+;
 
 const STATUS = {0: 'unknown', 1: 'started', 2: 'blocked', 3: 'completed'};
 
-const ActivityGraph = React.createClass({
-    getInitialState: function () {
-        return {name: 'line'}
-    },
-    renderD3: function (id) {
+class ActivityGraph extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: 'line'
+        };
+    }
+
+    renderD3(id) {
 
         let data = this.props.activities;
         let ctx = document.getElementById(id);
@@ -422,7 +357,7 @@ const ActivityGraph = React.createClass({
                     yAxes: [{
                         ticks: {
                             fontColor: 'rgba(190, 168, 25, 0.88)',
-                            callback: function (value, index, values) {
+                            callback(value, index, values) {
                                 return STATUS[value]
                             }
                         }
@@ -465,28 +400,35 @@ const ActivityGraph = React.createClass({
                 }]
             }
         })
-    },
-    activityTypeToNum: function (activity) {
+    }
+
+    activityTypeToNum(activity) {
         return _.findKey(STATUS, function (key) {
             return key === activity.activity_type
         })
-    },
-    componentDidUpdate: function () {
+    }
+
+    componentDidUpdate() {
         this.renderD3(this.props.id + this.state.name);
-    },
-    componentDidMount: function () {
+    }
+
+    componentDidMount() {
         this.renderD3(this.props.id + this.state.name);
-    },
-    render: function () {
+    }
+
+    render() {
         return (<canvas id={this.props.id + this.state.name}></canvas>)
     }
-});
+}
+;
 
-const Activity = React.createClass({
-    getInitialState: function () {
-        return {}
-    },
-    getIcon: function () {
+class Activity extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+    getIcon() {
         let icon;
         switch (this.props.type) {
             case 'completed':
@@ -503,8 +445,9 @@ const Activity = React.createClass({
                 break;
         }
         return icon
-    },
-    render: function () {
+    }
+
+    render() {
         return (
             <tr>
                 <td>
@@ -516,11 +459,12 @@ const Activity = React.createClass({
                 <td className="right aligned collapsing">{this.props.user.email}</td>
             </tr>
         )
-    },
-});
+    }
+}
+;
 
-const RangeDatePicker = React.createClass({
-    componentDidMount: function () {
+class RangeDatePicker extends React.Component {
+    componentDidMount() {
         $('#rangestart').calendar({
             type: 'date',
             endCalendar: $('#rangeend')
@@ -529,8 +473,9 @@ const RangeDatePicker = React.createClass({
             type: 'date',
             startCalendar: $('#rangestart')
         });
-    },
-    render: function () {
+    }
+
+    render() {
         return (
             <div style={{marginTop: '1em' }}>
                 <h4>OR</h4>
@@ -560,15 +505,19 @@ const RangeDatePicker = React.createClass({
             </div>
         )
     }
-});
+}
+;
 
-const CohortPicker = React.createClass({
-    getInitialState: function () {
-        return {
+class CohortPicker extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             content: []
-        }
-    },
-    componentDidMount: function () {
+        };
+    }
+
+
+    componentDidMount() {
         // [{title: 'aus-red-pandas-2016'}, {title: 'aus-squirrels-2016'}]
         client.getCohorts({}, (cohorts) => {
 
@@ -577,7 +526,7 @@ const CohortPicker = React.createClass({
                     return {title: cohort}
                 })
             })
-            console.log(this.state.content)
+
 
             $('.ui.search#cohort-search')
                 .search({
@@ -596,8 +545,9 @@ const CohortPicker = React.createClass({
             })
 
         });
-    },
-    render: function () {
+    }
+
+    render() {
         return (
             <div className="ui search" id="cohort-search">
                 <div className="ui icon input">
@@ -609,12 +559,14 @@ const CohortPicker = React.createClass({
                 </div>
             </div>)
     }
-});
+}
+;
 
 
-const PhaseWeekDayPicker = React.createClass({
-    getInitialState: function () {
-        return {
+class PhaseWeekDayPicker extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             content: [
                 {title: 'Phase 1 - Week 1 - Day 1', params: '1-1-1'},
                 {title: 'Phase 1 - Week 1 - Day 2', params: '1-1-2'},
@@ -667,8 +619,9 @@ const PhaseWeekDayPicker = React.createClass({
 
             ]
         }
-    },
-    componentDidMount: function () {
+    }
+
+    componentDidMount() {
 
         let self = this;
 
@@ -683,13 +636,15 @@ const PhaseWeekDayPicker = React.createClass({
             });
 
 
-    },
-    submitPhaseOptions: function () {
+    }
+
+    submitPhaseOptions() {
         let options = {phase: this.state.phase, phaseDay: this.state.phaseDay, phaseWeek: this.state.phaseWeek}
 
         this.props.pickPhaseDay(options)
-    },
-    render: function () {
+    }
+
+    render() {
         return (
             <div>
                 <div className="ui selection dropdown" id="phase">
@@ -731,21 +686,28 @@ const PhaseWeekDayPicker = React.createClass({
             </div>
         )
     }
-});
+}
+;
 
-const DisplayOptionsMenu = React.createClass({
-    getInitialState: function () {
-        return {
-            isOpen: false,
-        }
-    },
-    toggleCohortView: function () {
+class DisplayOptionsMenu extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isOpen: false
+        };
+        this.toggleCohortView = this.toggleCohortView.bind(this);
+        this.toggleSettings   = this.toggleSettings.bind(this);
+    }
+
+    toggleCohortView() {
         this.props.setAnalyticViewType('cohort')
-    },
-    toggleSettings: function () {
+    }
+
+    toggleSettings() {
         this.setState({isOpen: !this.state.isOpen})
-    },
-    render: function () {
+    }
+
+    render() {
         return (
             <div className="ui two column centered grid">
                 <div className="ui segment inverted column center aligned " id="options-menu">
@@ -762,7 +724,127 @@ const DisplayOptionsMenu = React.createClass({
                 </div>
             </div>)
     }
-});
+}
+;
+
+class CohortsDashboard extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            activities: [],
+            particlesLoaded: false,
+            analyticView: 'cohort',
+            selectedCohort: false,
+            phase: false,
+            week: false,
+            day: false,
+        };
+        this.updateAnalytics = this.updateAnalytics.bind(this);
+        this.pickPhaseDay = this.pickPhaseDay.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.setAnalyticView = this. setAnalyticView.bind(this);
+        this.getActivitiesForAllCohorts = this.getActivitiesForAllCohorts.bind(this);
+        this.pickCohort = this.pickCohort.bind(this);
+        this.loadCohortsFromServer = this.loadCohortsFromServer.bind(this);
+        this.loadParticles = this.loadParticles.bind(this);
+    }
+
+    updateAnalytics() {
+        let options = {
+            phase: this.state.phase,
+            week: this.state.week,
+            day: this.state.day,
+            cohort: this.state.selectedCohort
+        };
+        let readyOptions = _.pickBy(options, _.identity);
+
+        client.getActivitiesByQuery(readyOptions, (activities) => {
+            if (this.state.analyticView == 'cohort') {
+                this.setState({activities: _.groupBy(activities, 'cohort')})
+            } else {
+                this.setState({activities: _.groupBy(activities, '_user.email')})
+            }
+
+        });
+
+    }
+
+    pickPhaseDay(phaseOptions) {
+        this.setState({phase: phaseOptions.phase, week: phaseOptions.phaseWeek, day: phaseOptions.phaseDay})
+        this.updateAnalytics();
+
+    }
+
+
+    componentDidMount() {
+        this.loadCohortsFromServer();
+    }
+
+
+    setAnalyticView(type) {
+        this.setState({analyticView: type})
+        this.getActivitiesForAllCohorts();
+    }
+
+    getActivitiesForAllCohorts() {
+        this.setState({analyticView: 'cohort', selectedCohort: false});
+        this.updateAnalytics();
+    }
+
+
+    pickCohort(cohort) {
+        this.setState({analyticView: 'students', selectedCohort: cohort});
+        this.updateAnalytics();
+    }
+
+
+    loadCohortsFromServer() {
+        client.getFurthestActivities((activities) => {
+                this.setState({activities: _.groupBy(activities, '_user.email')})
+                if (activities.length != this.state.activities.length) {
+                    this.loadParticles();
+                }
+            }
+        )
+    }
+
+
+    loadParticles() {
+        /* particlesJS.load(@dom-id, @path-json, @callback (optional)); */
+        if (!this.state.particlesLoaded) {
+            particlesJS.load('particles-js', 'public/assets/particles.json', function () {
+
+            });
+            this.setState({particlesLoaded: true})
+        }
+    }
+
+    render() {
+        const lists = [];
+
+        let i = 0;
+
+        _.forIn(this.state.activities, (activities, person) => (
+            i += 1,
+                lists.push(
+                    <ActivityList key={person} activities={activities} el_id={i}
+                                  user={activities[0]._user} person={person}
+                    />)
+        ));
+
+        return (
+            <div>
+                <DisplayOptionsMenu pickPhaseDay={this.pickPhaseDay} setAnalyticViewType={this.setAnalyticView}
+                                    pickCohort={this.pickCohort}/>
+                {this.state.analyticView}
+                <div className="ui three column doubling stackable grid" style={{margin:'auto'}}>
+                    {lists}
+                </div>
+            </div>)
+
+    }
+};
+
 
 ReactDOM.render(
     <CohortsDashboard />,

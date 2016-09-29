@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
-window.client = (function () {
+ var Client = function () {
   function getFurthestActivities(success) {
     return fetch('http://localhost:9000/api/activities/furthest', {
       headers: {
@@ -36,7 +36,7 @@ window.client = (function () {
         .then(parseJSON)
         .then(success)
   }
-  
+
   function getCohorts(data,success){
     var query = $.param( data );
     return fetch('http://localhost:9000/api/activities/cohorts' + query, {
@@ -157,4 +157,6 @@ window.client = (function () {
     stopTimer,
     deleteTimer,
   };
-}());
+};
+
+module.exports =  Client();
