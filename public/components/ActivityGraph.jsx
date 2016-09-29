@@ -1,4 +1,3 @@
-var client = require('./client');
 import React from 'react';
 
 const STATUS = {0: 'unknown', 1: 'started', 2: 'blocked', 3: 'completed'};

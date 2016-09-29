@@ -1,4 +1,4 @@
-var client = require('./client');
+var client = require('../client');
 import React from 'react';
 import Activity from './Activity.jsx'
 import ActivityGraph from './ActivityGraph.jsx'

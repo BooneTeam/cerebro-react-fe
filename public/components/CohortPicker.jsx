@@ -1,4 +1,4 @@
-var client = require('./client');
+var client = require('../client');
 import React from 'react';
 
 class CohortPicker extends React.Component {

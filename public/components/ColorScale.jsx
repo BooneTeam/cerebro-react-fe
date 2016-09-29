@@ -1,4 +1,3 @@
-var client = require('./client');
 import React from 'react';
 import ChallengeBlock from './ChallengeBlock.jsx'
 

@@ -1,4 +1,3 @@
-var client = require('./client');
 import React from 'react';
 class ChallengeBlock extends React.Component {
     blockColor() {

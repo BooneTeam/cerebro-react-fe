@@ -1,4 +1,4 @@
-var client = require('./client');
+var client = require('../client');
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ActivityList from './ActivityList.jsx'
@@ -59,12 +59,12 @@ class CohortsDashboard extends React.Component {
 
 
     setAnalyticView(type) {
-        this.setState({analyticView: type})
+        this.setState({analyticView: type});
         this.getActivitiesForAllCohorts();
     }
 
     getActivitiesForAllCohorts() {
-        this.setState({analyticView: 'cohort', selectedCohort: false});
+        this.setState({selectedCohort: false});
         this.updateAnalytics();
     }
 

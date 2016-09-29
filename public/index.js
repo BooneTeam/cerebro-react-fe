@@ -1,1 +1,1 @@
-import CohortsDashboard from './CohortsDashboard.jsx'
+import CohortsDashboard from './components/CohortsDashboard.jsx'
