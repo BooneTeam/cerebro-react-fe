@@ -152,12 +152,12 @@ exports.convertEs6 = function (paths) {
             loaders: [
                 {
 
-                    include: [paths, paths+'/components/'],
-                    test: /\.js$|.jsx$/,
+                    include: paths,
+                    test: /\.jsx?$/,
                     exclude: /(node_modules|bower_components)/,
-                    loader: 'babel-loader', // 'babel-loader' is also a valid name to reference
+                    loader: 'babel', // 'babel-loader' is also a valid name to reference
                     query: {
-                        presets: ['es2015', 'react']
+                        presets: ['es2015','react']
                     }
                 }
             ]

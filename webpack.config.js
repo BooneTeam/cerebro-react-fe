@@ -4,12 +4,8 @@ const merge = require('webpack-merge');
 const validate = require('webpack-validator')
 const PATHS = {
     app: path.join(__dirname, 'public'),
-    style: [
-        path.join(__dirname, 'public', 'style.css'),
-        path.join(__dirname, 'node_modules', 'purecss')
-    ],
+    style: path.join(__dirname, 'public', 'style.css'),
     assets: path.join(__dirname, 'public/assets/'),
-
     build: path.join(__dirname, 'build')
 };
 
@@ -20,8 +16,8 @@ const common = {
 // convenient with more complex configurations.
 
     entry: {
-        style: PATHS.style,
         app: PATHS.app,
+        style: PATHS.style
     },
     output: {
         path: PATHS.build,
@@ -32,14 +28,6 @@ const common = {
             template:'./public/index.html'
         })
     ],
-    // module: {
-    //     preLoaders: [
-    //         {
-    //             test: /\.jsx?$/,
-    //             loaders: ['eslint'],
-    //             include: PATHS.app
-    //         } ]
-    // },
 };
 
 var config;
@@ -68,17 +56,19 @@ switch(process.env.npm_lifecycle_event){
             //     name: 'vendor',
             //     entries: ['react']
             // }),
-            parts.minify(),
-            parts.extractCSS(PATHS.style),
-            parts.purifyCSS([PATHS.app])
+            // parts.minify(),
+            parts.setVariables,
+            parts.convertEs6([PATHS.app, path.join(__dirname, 'public/components/')]),
+            parts.extractCSS(PATHS.style)
+
+            // parts.purifyCSS([PATHS.app])
         );
         break;
     default:
-        console.log(process.env.npm_lifecycle_event);
         config = merge(
-            parts.setVariables,
-            parts.convertEs6(PATHS.app),
             common,
+            parts.setVariables,
+            parts.convertEs6([PATHS.app, path.join(__dirname, 'public/components/')]),
             parts.devServer({
             // Customize host/port here if needed
             host: process.env.HOST,
