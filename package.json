@@ -31,7 +31,8 @@
     "fs": "0.0.2",
     "lodash": "^4.15.0",
     "path": "0.12.7",
-    "react": "^15.3.1"
+    "react": "^15.3.1",
+    "webpack-dev-server": "^1.15.2"
   },
   "devDependencies": {
     "babel-core": "^6.4.5",
