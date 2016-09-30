@@ -12,13 +12,13 @@
 
 export const port = process.env.PORT || 3000;
 export const host = process.env.WEBSITE_HOSTNAME || `localhost:${port}`;
-export const backend = process.env.BACKEND_URI || 'http://localhost:9000/';
+console.log(process.env);
+//Just hardcode more shit for now
+export const backend = process.env.BACKEND_URI || 'http://cerebro-be.herokuapp.com/';
 
 export const analytics = {
-
     // https://analytics.google.com/
     google: { trackingId: process.env.GOOGLE_TRACKING_ID || 'UA-XXXXX-X' },
-
 
 };
 

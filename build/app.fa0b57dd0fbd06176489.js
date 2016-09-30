@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "172fd3050fbeab99f468"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "fa0b57dd0fbd06176489"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -21957,12 +21957,14 @@
 /* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 	
 	var config = __webpack_require__(172);
 	/* eslint-disable no-console */
 	/* eslint-disable no-undef */
 	var Client = function Client() {
+	    console.log(process.env.API_URL);
+	    console.log(config);
 	    function getFurthestActivities(success) {
 	        return fetch(config.backend + 'api/activities/furthest', {
 	            headers: {
@@ -22109,6 +22111,7 @@
 	};
 	
 	module.exports = Client();
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(112)))
 
 /***/ },
 /* 172 */
@@ -22133,10 +22136,10 @@
 	
 	var port = exports.port = process.env.PORT || 3000;
 	var host = exports.host = process.env.WEBSITE_HOSTNAME || 'localhost:' + port;
+	console.log(process.env);
 	var backend = exports.backend = process.env.BACKEND_URI || 'http://localhost:9000/';
 	
 	var analytics = exports.analytics = {
-	
 	    // https://analytics.google.com/
 	    google: { trackingId: process.env.GOOGLE_TRACKING_ID || 'UA-XXXXX-X' }
 	
@@ -22671,4 +22674,4 @@
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=app.172fd3050fbeab99f468.js.map
+//# sourceMappingURL=app.fa0b57dd0fbd06176489.js.map

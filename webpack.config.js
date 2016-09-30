@@ -30,6 +30,7 @@ const common = {
     ],
 };
 
+
 var config;
 
 switch(process.env.npm_lifecycle_event){
