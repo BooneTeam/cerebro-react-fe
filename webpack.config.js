@@ -64,7 +64,7 @@ switch(process.env.npm_lifecycle_event){
             // Customize host/port here if needed
             host: process.env.HOST,
             port: process.env.PORT
-        }),
+        })
             // parts.purifyCSS([PATHS.app])
         );
         break;
