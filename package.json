@@ -12,8 +12,6 @@
     "stats": "webpack --profile --json > stats.json",
     "deploy": "gh-pages -d build",
     "start": "webpack-dev-server --port 56464",
-    "dist": "webpack -p",
-    "postinstall": "npm run dist"
   },
   "babel": {
     "presets": [
