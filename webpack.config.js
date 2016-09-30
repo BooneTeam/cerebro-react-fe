@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const merge = require('webpack-merge');
-const validate = require('webpack-validator')
+const validate = require('webpack-validator');
 const PATHS = {
     app: path.join(__dirname, 'public'),
     style: path.join(__dirname, 'public', 'style.css'),
@@ -40,11 +40,11 @@ switch(process.env.npm_lifecycle_event){
                 devtool: 'source-map',
                 output: {
                     path: PATHS.build,
-                    filename: '[name].[chunkhash].js',
+                    filename: '[name].[hash].js',
                     publicPath: '/cerebro-dbc/',
                     // This is used for require.ensure. The setup
                     // will work without but this is useful to set.
-                    chunkFilename: '[chunkhash].js'
+                    chunkFilename: '[hash].js'
                 }
             },
             parts.clean(PATHS.build),

@@ -11,7 +11,9 @@
     "build": "webpack",
     "stats": "webpack --profile --json > stats.json",
     "deploy": "gh-pages -d build",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "dist": "webpack -p",
+    "postinstall": "npm run dist"
   },
   "babel": {
     "presets": [
