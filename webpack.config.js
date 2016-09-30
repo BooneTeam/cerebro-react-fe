@@ -59,8 +59,12 @@ switch(process.env.npm_lifecycle_event){
             // parts.minify(),
             parts.setVariables,
             parts.convertEs6([PATHS.app, path.join(__dirname, 'public/components/')]),
-            parts.extractCSS(PATHS.style)
-
+            parts.extractCSS(PATHS.style),
+        parts.devServer({
+            // Customize host/port here if needed
+            host: process.env.HOST,
+            port: process.env.PORT
+        }),
             // parts.purifyCSS([PATHS.app])
         );
         break;
