@@ -160,7 +160,7 @@ body {
 
 table.challenge-list td {
     color: white;
-    border-bottom: white solid thin;
+    border-bottom: rgba(255, 215, 0, 0.4) thin solid !important;
     width: inherit !important;
 }
 
@@ -172,6 +172,7 @@ table.challenge-list {
     background-color: rgba(0, 0, 0, 0.3) !important;
     border-right: none !important;
     border-left: none !important;
+    border-bottom: rgba(255, 215, 0, 0.4) thin solid !important;
 }
 
 .table-container{
