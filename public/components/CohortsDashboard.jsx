@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ActivityList from './ActivityList.jsx'
 import DisplayOptionsMenu from './DisplayOptionsMenu.jsx'
+import FilterBar from './FilterBar.jsx'
 
 class CohortsDashboard extends React.Component {
     constructor(props) {
@@ -118,10 +119,12 @@ class CohortsDashboard extends React.Component {
 
         return (
             <div>
-                <DisplayOptionsMenu pickPhaseDay={this.pickPhaseDay} setAnalyticViewType={this.setAnalyticView}
+                <FilterBar pickPhaseDay={this.pickPhaseDay} setAnalyticViewType={this.setAnalyticView}
                                     pickCohort={this.pickCohort} pickStudent={this.pickStudent}/>
+                {/* <DisplayOptionsMenu pickPhaseDay={this.pickPhaseDay} setAnalyticViewType={this.setAnalyticView}
+                                     pickCohort={this.pickCohort} pickStudent={this.pickStudent}/>*/}
                 {this.state.analyticView}
-                <div className="ui five column doubling stackable grid" style={{margin:'auto'}}>
+                <div id='stats-container' className="ui five column doubling stackable grid" style={{margin:'auto'}}>
                     {lists}
                 </div>
             </div>)
