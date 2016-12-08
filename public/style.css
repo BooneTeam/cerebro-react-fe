@@ -172,7 +172,10 @@ table.challenge-list {
     background-color: rgba(0, 0, 0, 0.3) !important;
     border-right: none !important;
     border-left: none !important;
+}
 
+.table-container{
+    overflow:hidden;
 }
 
 .challenge-list thead, tbody {

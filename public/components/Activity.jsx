@@ -45,7 +45,7 @@ class Activity extends React.Component {
 
     render() {
         return (
-            <tr className={this.getStatusClass()}>
+            <tr className={this.getStatusClass()} >
                 <td className="collapsing">
                     {this.getIcon()} <a target="_blank" href={this.props.gitUrl} >{this.props.challenge}</a>
                 </td>

@@ -117,7 +117,7 @@ class ActivityList extends React.Component {
                 </div>)
         } else {
             return (
-                <div key={this.props.person} className="column">
+                <div key={this.props.person} className="column table-container">
                     <UserActivityGraphsHeader setGraphType={this.setGraphType}
                                               person={this.props.person}
                                               activities={this.props.activities}/>
