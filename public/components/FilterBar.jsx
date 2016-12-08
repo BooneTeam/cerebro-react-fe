@@ -42,19 +42,6 @@ class FilterBar extends React.Component {
                     <StudentPicker pickStudent={this.props.pickStudent}/>
                     <CohortPicker pickCohort={this.props.pickCohort}/>
                 </div>
-
-                {/* <div className="item">*/}
-                {/*     <div className="ui icon input">*/}
-                {/*         <input type="text" placeholder="Search..." />*/}
-                {/*             <i className="search icon"></i>*/}
-                {/*     </div>*/}
-                {/* </div>*/}
-                {/* <div className="right item">*/}
-                {/*     <div className="ui action input">*/}
-                {/*         <input type="text" placeholder="Navigate to..." />*/}
-                {/*             <div className="ui button">Go</div>*/}
-                {/*     </div>*/}
-                {/* </div>*/}
             </div>
         )
     }

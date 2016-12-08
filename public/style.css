@@ -175,7 +175,7 @@ table.challenge-list {
 }
 
 .table-container{
-    overflow:hidden;
+    overflow:auto;
 }
 
 .challenge-list thead, tbody {

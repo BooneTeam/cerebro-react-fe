@@ -42,7 +42,7 @@ class CohortPicker extends React.Component {
 
     render() {
         return (
-            <div className="ui search" id="cohort-search">
+            <div className="ui item search" id="cohort-search">
                 <div className="ui icon input">
                     <input className="prompt" type="text" placeholder="Search Cohorts"></input>
                     <i className="search icon"></i>

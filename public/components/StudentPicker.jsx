@@ -42,7 +42,7 @@ class StudentPicker extends React.Component {
 
     render() {
         return (
-            <div className="ui search" id="student-search">
+            <div className="ui item search" id="student-search">
                 <div className="ui icon input">
                     <input className="prompt" type="text" placeholder="Search Students"></input>
                     <i className="search icon"></i>
