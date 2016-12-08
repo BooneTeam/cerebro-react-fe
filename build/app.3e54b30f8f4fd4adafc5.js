@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "fa0b57dd0fbd06176489"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "3e54b30f8f4fd4adafc5"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -670,7 +670,7 @@
 	                if (_this2.state.analyticView == 'cohort') {
 	                    _this2.setState({ activities: _.groupBy(activities, 'cohort') });
 	                } else {
-	                    _this2.setState({ activities: _.groupBy(activities, '_user.email') });
+	                    _this2.setState({ activities: _.groupBy(activities, '_user.github.name') });
 	                }
 	            });
 	        }
@@ -709,7 +709,7 @@
 	            var _this3 = this;
 	
 	            client.getFurthestActivities(function (activities) {
-	                _this3.setState({ activities: _.groupBy(activities, '_user.email') });
+	                _this3.setState({ activities: _.groupBy(activities, '_user.github.name') });
 	                if (activities.length != _this3.state.activities.length) {
 	                    _this3.loadParticles();
 	                }
@@ -21425,7 +21425,7 @@
 	                _react2.default.createElement(
 	                    'td',
 	                    { className: 'right aligned collapsing' },
-	                    this.props.user.email
+	                    this.props.user.github.name
 	                )
 	            );
 	        }
@@ -21957,14 +21957,14 @@
 /* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+	'use strict';
 	
 	var config = __webpack_require__(172);
+	
 	/* eslint-disable no-console */
 	/* eslint-disable no-undef */
 	var Client = function Client() {
-	    console.log(process.env.API_URL);
-	    console.log(config);
+	    console.log(config.environment);
 	    function getFurthestActivities(success) {
 	        return fetch(config.backend + 'api/activities/furthest', {
 	            headers: {
@@ -21974,7 +21974,6 @@
 	    }
 	
 	    function getActivitiesByPerson(data, success) {
-	
 	        var query = $.param(data);
 	        return fetch(config.backend + 'api/activities?' + query, {
 	            method: 'get',
@@ -22111,7 +22110,6 @@
 	};
 	
 	module.exports = Client();
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(112)))
 
 /***/ },
 /* 172 */
@@ -22133,11 +22131,20 @@
 	
 	/* eslint-disable max-len */
 	/* jscs:disable maximumLineLength */
-	
 	var port = exports.port = process.env.PORT || 3000;
 	var host = exports.host = process.env.WEBSITE_HOSTNAME || 'localhost:' + port;
-	console.log(process.env);
-	var backend = exports.backend = process.env.BACKEND_URI || 'http://localhost:9000/';
+	//Just hardcode more shit for now
+	
+	
+	// THIS WILL BE AN EMPTY OBJECT HERE.
+	// IT WILL BE AVAILABLE IN THE CODE THOUGH
+	// IF YOU DONT BELIEVE ME DO A CONSOLE LOG IN CLIENT JS OF THE CONST environment
+	console.log(process);
+	
+	var environment = exports.environment = ("production");
+	
+	// export const backend = process.env.BACKEND_URI || 'http://cerebro-be.herokuapp.com/';
+	var backend = exports.backend = ("http://localhost:3000/") || 'http://cerebro-be.herokuapp.com/';
 	
 	var analytics = exports.analytics = {
 	    // https://analytics.google.com/
@@ -22674,4 +22681,4 @@
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=app.fa0b57dd0fbd06176489.js.map
+//# sourceMappingURL=app.3e54b30f8f4fd4adafc5.js.map

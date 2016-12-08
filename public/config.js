@@ -9,12 +9,21 @@
 
 /* eslint-disable max-len */
 /* jscs:disable maximumLineLength */
-
 export const port = process.env.PORT || 3000;
 export const host = process.env.WEBSITE_HOSTNAME || `localhost:${port}`;
-console.log(process.env);
 //Just hardcode more shit for now
+
+
+// THIS WILL BE AN EMPTY OBJECT HERE.
+// IT WILL BE AVAILABLE IN THE CODE THOUGH
+// IF YOU DONT BELIEVE ME DO A CONSOLE LOG IN CLIENT JS OF THE CONST environment
+console.log(process);
+
+export const environment = process.env.NODE_ENV;
+
+// export const backend = process.env.BACKEND_URI || 'http://cerebro-be.herokuapp.com/';
 export const backend = process.env.BACKEND_URI || 'http://cerebro-be.herokuapp.com/';
+
 
 export const analytics = {
     // https://analytics.google.com/

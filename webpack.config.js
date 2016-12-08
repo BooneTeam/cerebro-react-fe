@@ -53,6 +53,10 @@ switch(process.env.npm_lifecycle_event){
                 'process.env.NODE_ENV',
                 'production'
             ),
+            parts.setFreeVariable(
+                'process.env.BACKEND_URI',
+                process.env.BACKEND_URI || 'localhost:3000/'
+            ),
             // parts.extractBundle({
             //     name: 'vendor',
             //     entries: ['react']
@@ -72,6 +76,14 @@ switch(process.env.npm_lifecycle_event){
     default:
         config = merge(
             common,
+            parts.setFreeVariable(
+                'process.env.NODE_ENV',
+                'development'
+            ),
+            parts.setFreeVariable(
+                'process.env.BACKEND_URI',
+                process.env.BACKEND_URI || 'localhost:3000/'
+            ),
             parts.setVariables,
             parts.convertEs6([PATHS.app, path.join(__dirname, 'public/components/')]),
             parts.devServer({

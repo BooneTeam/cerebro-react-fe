@@ -1,7 +1,9 @@
 var config = require('./config.js');
+
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
 var Client = function () {
+    console.log(config.environment);
     function getFurthestActivities(success) {
         return fetch(config.backend + 'api/activities/furthest', {
             headers: {
@@ -13,7 +15,6 @@ var Client = function () {
     }
 
     function getActivitiesByPerson(data, success) {
-
         var query = $.param(data);
         return fetch(config.backend + 'api/activities?' + query, {
             method: 'get',
@@ -41,6 +42,18 @@ var Client = function () {
     function getCohorts(data, success) {
         var query = $.param(data);
         return fetch(config.backend + 'api/activities/cohorts' + query, {
+            method: 'get',
+            headers: {
+                Accept: 'application/json',
+            },
+        }).then(checkStatus)
+            .then(parseJSON)
+            .then(success)
+    }
+
+    function getStudents(data, success) {
+        var query = $.param(data);
+        return fetch(config.backend + 'api/users' + query, {
             method: 'get',
             headers: {
                 Accept: 'application/json',
@@ -146,6 +159,7 @@ var Client = function () {
     }
 
     return {
+        getStudents: getStudents,
         getActivities: getActivities,
         getCohorts: getCohorts,
         getActivitiesByQuery: getActivitiesByQuery,

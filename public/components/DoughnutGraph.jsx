@@ -9,7 +9,13 @@ class DoughnutGraph extends React.Component {
     }
 
     renderD3(id) {
+        let keys = ['complete','blocked', 'started'];
         let dataSet = _.groupBy(this.props.activities, 'activity_type');
+        let arrayOfDiffs = _.difference(keys,_.keys(dataSet));
+        arrayOfDiffs.forEach(function(aKey){
+            dataSet[aKey] = []
+        });
+        dataSet = _(dataSet).toPairs().sortBy(0).fromPairs().value();
         let dataSetData = _.map(dataSet, function (obj) {
             return obj.length
         });
@@ -19,8 +25,8 @@ class DoughnutGraph extends React.Component {
                 {
                     data: dataSetData,
                     backgroundColor: [
-                        "rgb(127, 255, 0)",
                         "rgb(237, 20, 61)",
+                        "rgb(127, 255, 0)",
                         "rgb(255, 215, 0)"
                     ],
                     hoverBackgroundColor: [

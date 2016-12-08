@@ -44,6 +44,7 @@
     "jshint": "^2.9.3",
     "jshint-loader": "^0.8.3",
     "lodash": "^4.15.0",
+    "moment": "^2.17.1",
     "particles.js": "^2.0.0",
     "path": "0.12.7",
     "purecss": "^0.6.0",

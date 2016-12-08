@@ -73,7 +73,8 @@ exports.setVariables = function () {
         plugins: [
             new webpack.ProvidePlugin({
                 $: "jquery",
-                jQuery: "jquery"
+                jQuery: "jquery",
+                process: { env: { 'BACKEND_URI' : process.env.BACKEND_URI } }
             })
         ]
 
@@ -93,7 +94,7 @@ exports.minify = function () {
 };
 
 exports.setFreeVariable = function (key, value) {
-    const env = {};
+    const env = {} ;
     env[key] = JSON.stringify(value);
     return {
         plugins: [

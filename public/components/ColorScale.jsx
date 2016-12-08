@@ -1,5 +1,7 @@
 import React from 'react';
-import ChallengeBlock from './ChallengeBlock.jsx'
+import ChallengeBlock from './ChallengeBlock.jsx';
+import moment from 'moment';
+import _ from 'lodash';
 
 class ColorScale extends React.Component {
     constructor(props) {
@@ -17,7 +19,7 @@ class ColorScale extends React.Component {
         let data = this.props.activities;
 
         let total = data.length;
-        let completed = _.filter(data, {activity_type: 'completed'}).length;
+        let completed = _.filter(data, {activity_type: 'complete'}).length;
         let progress = $('.challenge-block-container#' + this.props.id + ' .ui.progress');
         let percent = (completed / data.length) * 100;
         progress.progress('reset');
@@ -29,7 +31,7 @@ class ColorScale extends React.Component {
                 error: false,
                 success: false,
                 warning: false,
-                percent: 'Challenge Completion {percent}%',
+                percent: '{percent}%',
                 ratio: '{value} of {total}'
             }
         });
@@ -44,12 +46,20 @@ class ColorScale extends React.Component {
 
     }
 
+    createBlocks(data, week) {
+        console.log(data);
+        return _.map(data, (group, key) => {
+            return (<ChallengeBlock key={group.repo + key + week} repo={group.repo} activity_type={group.activity_type}/>
+            )
+        })
+    }
+
     render() {
 
         let data = this.props.activities;
 
 
-        let completed = _.filter(data, {activity_type: 'completed'}).length;
+        let completed = _.filter(data, {activity_type: 'complete'}).length;
         let percent = (completed / data.length) * 100;
         switch (true) {
             case(percent >= 80):
@@ -65,11 +75,18 @@ class ColorScale extends React.Component {
                 this.state.color = 'yellow';
         }
 
-
-        const blocks = _.map(data, (group, key) => {
-            return (<ChallengeBlock key={group.repo + key} repo={group.repo} activity_type={group.activity_type}/>
-            )
+        // Create Blocks By Weeks
+        var byWeeksAsKeys = _.groupBy(data, function (arg) {
+            return moment(arg.activity_meta[0].timestamp).week()
         });
+
+        var thisClass = this;
+
+        const blocks = _.map(byWeeksAsKeys,function(objects,week){
+            var blocks = thisClass.createBlocks(objects, week );
+            return (<div key={week}>{blocks}</div>)
+        });
+
         return (
             <div className='challenge-block-container' id={this.props.id}>
                 {blocks}

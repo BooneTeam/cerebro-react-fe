@@ -15,9 +15,9 @@ class UserActivityGraphsHeader extends React.Component {
                     <button className="ui button inverted blue " onClick={() => this.props.setGraphType('scale',true)}>
                         <i
                             className="bar chart icon"></i></button>
-                    <button className="ui button inverted blue " onClick={() => this.props.setGraphType('line',true)}>
+                    {/*<button className="ui button inverted blue " onClick={() => this.props.setGraphType('line',true)}>
                         <i
-                            className="line chart icon"></i></button>
+                            className="line chart icon"></i></button>*/}
                     <button className="ui button inverted blue " onClick={() => this.props.setGraphType('pie',true)}>
                         <i
                             className="pie chart icon"></i></button>

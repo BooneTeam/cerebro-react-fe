@@ -49,8 +49,8 @@ body{
 
 .challenge-block{
     display:inline-block;
-    height: 3em;
-    width: 3em;
+    height: 1em;
+    width: 1em;
     border:black solid thin;
 }
 
@@ -138,4 +138,4 @@ body{
     background:rgba(88,88,88,.5)
 }
 
-/*# sourceMappingURL=style.110df3a28cd884f2728e.css.map*/
+/*# sourceMappingURL=style.7483b6eab6191a81b6cb.css.map*/

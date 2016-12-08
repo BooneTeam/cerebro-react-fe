@@ -1,7 +1,7 @@
 var client = require('../client');
 import React from 'react';
 
-class CohortPicker extends React.Component {
+class StudentPicker extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -12,28 +12,28 @@ class CohortPicker extends React.Component {
 
     componentDidMount() {
         // [{title: 'aus-red-pandas-2016'}, {title: 'aus-squirrels-2016'}]
-        client.getCohorts({}, (cohorts) => {
+        client.getStudents({}, (cohorts) => {
 
             this.setState({
                 content: cohorts.map(function (cohort) {
-                    return {title: cohort}
+                    return {title: cohort.github.name}
                 })
-            });
+            })
 
 
-            $('.ui.search#cohort-search')
+            $('.ui.search#student-search')
                 .search({
                     source: this.state.content,
                     onSelect: (chosen) => (
-                        this.props.pickCohort(chosen.title)
+                        this.props.pickStudent(chosen.title)
                     )
-                });
+                })
 
 
-            $('.ui.search#cohort-search input').blur((event) => {
+            $('.ui.search#student-search input').blur((event) => {
                 let value = $(event.currentTarget).val();
                 if (value == '') {
-                    this.props.pickCohort('');
+                    this.props.pickStudent('');
                 }
             })
 
@@ -42,9 +42,9 @@ class CohortPicker extends React.Component {
 
     render() {
         return (
-            <div className="ui search" id="cohort-search">
+            <div className="ui search" id="student-search">
                 <div className="ui icon input">
-                    <input className="prompt" type="text" placeholder="Search Cohorts"></input>
+                    <input className="prompt" type="text" placeholder="Search Students"></input>
                     <i className="search icon"></i>
                 </div>
                 <div className="ui column center aligned">
@@ -55,4 +55,4 @@ class CohortPicker extends React.Component {
 }
 ;
 
-export default CohortPicker;
+export default StudentPicker;

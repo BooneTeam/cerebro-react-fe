@@ -61,6 +61,7 @@ class ActivityList extends React.Component {
                 type={activity.activity_type}
                 challenge={activity.repo}
                 user={activity._user || {email: 'unknown'}}
+                gitUrl={activity.activity_meta[0].url}
             />
         ));
 
@@ -120,7 +121,7 @@ class ActivityList extends React.Component {
                     <UserActivityGraphsHeader setGraphType={this.setGraphType}
                                               person={this.props.person}
                                               activities={this.props.activities}/>
-                    <table className="ui attached segment celled striped table column">
+                    <table className="ui attached segment celled table column challenge-list">
                         <thead>
                         </thead>
                         <tbody>

@@ -22,6 +22,7 @@ class CohortsDashboard extends React.Component {
         this.setAnalyticView = this. setAnalyticView.bind(this);
         this.getActivitiesForAllCohorts = this.getActivitiesForAllCohorts.bind(this);
         this.pickCohort = this.pickCohort.bind(this);
+        this.pickStudent = this.pickStudent.bind(this);
         this.loadCohortsFromServer = this.loadCohortsFromServer.bind(this);
         this.loadParticles = this.loadParticles.bind(this);
     }
@@ -31,7 +32,8 @@ class CohortsDashboard extends React.Component {
             phase: this.state.phase,
             week: this.state.week,
             day: this.state.day,
-            cohort: this.state.selectedCohort
+            cohort: this.state.selectedCohort,
+            username: this.state.selectedStudent
         };
         let readyOptions = _.pickBy(options, _.identity);
 
@@ -39,7 +41,7 @@ class CohortsDashboard extends React.Component {
             if (this.state.analyticView == 'cohort') {
                 this.setState({activities: _.groupBy(activities, 'cohort')})
             } else {
-                this.setState({activities: _.groupBy(activities, '_user.email')})
+                this.setState({activities: _.groupBy(activities, '_user.github.name')})
             }
 
         });
@@ -49,7 +51,6 @@ class CohortsDashboard extends React.Component {
     pickPhaseDay(phaseOptions) {
         this.setState({phase: phaseOptions.phase, week: phaseOptions.phaseWeek, day: phaseOptions.phaseDay})
         this.updateAnalytics();
-
     }
 
 
@@ -74,10 +75,15 @@ class CohortsDashboard extends React.Component {
         this.updateAnalytics();
     }
 
+    pickStudent(student) {
+        this.setState({analyticView: 'students', selectedStudent: student});
+        this.updateAnalytics();
+    }
+
 
     loadCohortsFromServer() {
         client.getFurthestActivities((activities) => {
-                this.setState({activities: _.groupBy(activities, '_user.email')})
+                this.setState({activities: _.groupBy(activities, '_user.github.name')})
                 if (activities.length != this.state.activities.length) {
                     this.loadParticles();
                 }
@@ -112,9 +118,9 @@ class CohortsDashboard extends React.Component {
         return (
             <div>
                 <DisplayOptionsMenu pickPhaseDay={this.pickPhaseDay} setAnalyticViewType={this.setAnalyticView}
-                                    pickCohort={this.pickCohort}/>
+                                    pickCohort={this.pickCohort} pickStudent={this.pickStudent}/>
                 {this.state.analyticView}
-                <div className="ui three column doubling stackable grid" style={{margin:'auto'}}>
+                <div className="ui five column doubling stackable grid" style={{margin:'auto'}}>
                     {lists}
                 </div>
             </div>)

@@ -49,14 +49,14 @@ body{
 
 .challenge-block{
     display:inline-block;
-    height: 3em;
-    width: 3em;
+    height: 1em;
+    width: 1em;
     border:black solid thin;
 }
 
 .challenge-block:hover{
-    height: 3.1em;
-    width: 3.1em;
+    height: 1.2em;
+    width: 1.2em;
     box-shadow: .5px .5px 1px 1px cyan;
 }
 
@@ -136,4 +136,61 @@ body{
 
 #content .ui.inverted.button#settings-button:focus,#cohorts-button:focus{
     background:rgba(88,88,88,.5)
+}
+
+
+
+.light-green{
+  background-color:rgba(57, 245, 0, 0.25);
+}
+
+.light-red{
+    background-color:rgba(245, 0, 0, 0.25);
+}
+
+.light-yellow{
+    background-color:rgba(241, 245, 0, 0.25);
+}
+
+table.challenge-list td{
+    color:white;
+    border-bottom: white solid thin;
+    width: inherit !important;
+}
+
+table.challenge-list tr{
+    width: 300px;
+}
+
+table.challenge-list{
+    background-color: rgba(0,0,0,0.3) !important;
+    border-right:none !important;
+    border-left:none !important;
+
+}
+
+.challenge-list thead, tbody { display: block; }
+
+.challenge-list tbody {
+    height: 300px;       /* Just for the demo          */
+    overflow-y: auto;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
+}
+
+tbody a{
+    color:burlywood;
+}
+
+
+
+.ui#cohorts-button, .ui#students-button{
+    margin:1em;
+}
+
+.ui#cohorts-button>.icon:not(.button), .ui#settings-button>.icon:not(.button){
+    margin:0;
+}
+
+.search-wrapper{
+    display:inline-flex;
 }
