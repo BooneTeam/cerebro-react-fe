@@ -17,7 +17,7 @@ const common = {
 
     entry: {
         app: PATHS.app,
-        style: PATHS.style
+        style: PATHS.style,
     },
     output: {
         path: PATHS.build,
@@ -57,7 +57,10 @@ switch(process.env.npm_lifecycle_event){
                 'process.env.BACKEND_URI',
                 process.env.BACKEND_URI || 'localhost:3000/'
             ),
-            // parts.extractBundle({
+            // parts.htmlLoader(PATHS.assets),
+            parts.fileLoader(PATHS.app),
+
+        // parts.extractBundle({
             //     name: 'vendor',
             //     entries: ['react']
             // }),
@@ -76,6 +79,7 @@ switch(process.env.npm_lifecycle_event){
     default:
         config = merge(
             common,
+            // parts.htmlLoader(PATHS.app),
             parts.setFreeVariable(
                 'process.env.NODE_ENV',
                 'development'
@@ -84,6 +88,8 @@ switch(process.env.npm_lifecycle_event){
                 'process.env.BACKEND_URI',
                 process.env.BACKEND_URI || 'localhost:3000/'
             ),
+            // parts.htmlLoader(PATHS.assets),
+            parts.fileLoader(PATHS.app),
             parts.setVariables,
             parts.convertEs6([PATHS.app, path.join(__dirname, 'public/components/')]),
             parts.devServer({

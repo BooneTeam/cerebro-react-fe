@@ -36,22 +36,30 @@ exports.htmlLoader = function(paths){
     return {
         module: {
             loaders: [
-                { test: /\.jpg$/, loader: "file-loader", include:paths },
-                { test: /\.png$/, loader: "file-loader?mimetype=image/png" ,include:paths}
+                // { test: /\.png$/, loader: "url-loader?mimetype=image/png", include:paths },
+                // { test: /\.jpg$/, loader: "file-loader", include:paths },
+                // { test: /\.png$/, loader: "file-loader?mimetype=image/png" ,include:paths},
+                // {
+                    // test: /\.html$/,
+                    // loader: 'file-loader?name=[path][name].[ext]!extract-loader!html-loader'
+                // }
             ]
-        }
+        },
+        // "output": { "publicPath": "/" }
     }
 };
 
 exports.fileLoader = function (paths) {
+    console.log(paths)
     return {
         module: {
             loaders: [
                 {
-                    test: /\.png$/i,
-                    loader: 'file'
+                    test: /\.(jpe?g|png|gif|svg)$/i,
+                    loader: 'url?limit=25000',
+                    include: paths
                 }]
-        }
+        },
     }
 }
 

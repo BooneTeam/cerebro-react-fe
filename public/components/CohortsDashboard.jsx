@@ -1,4 +1,5 @@
 var client = require('../client');
+var particlesConfig = require("json-loader!../assets/particles.json");
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ActivityList from './ActivityList.jsx'
@@ -95,10 +96,10 @@ class CohortsDashboard extends React.Component {
     loadParticles() {
         /* particlesJS.load(@dom-id, @path-json, @callback (optional)); */
         if (!this.state.particlesLoaded) {
-            particlesJS.load('particles-js', 'public/assets/particles.json', function () {
-
+            particlesJS('particles-js', particlesConfig, function () {
+                this.setState({particlesLoaded: true})
             });
-            this.setState({particlesLoaded: true})
+            // this.setState({particlesLoaded: true})
         }
     }
 
