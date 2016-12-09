@@ -38,7 +38,7 @@ class FilterBar extends React.Component {
                     <button id='cohorts-button' className="ui inverted button" onClick={this.toggleStudentView}><i
                         className="user icon"></i></button>
                 </div>
-                <div className="right item">
+                <div className="right menu">
                     <StudentPicker pickStudent={this.props.pickStudent}/>
                     <CohortPicker pickCohort={this.props.pickCohort}/>
                 </div>
