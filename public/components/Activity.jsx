@@ -8,7 +8,7 @@ class Activity extends React.Component {
     getIcon() {
         let icon;
         switch (this.props.type) {
-            case 'complete':
+            case 'completed':
                 icon = <i className="fa fa-check" aria-hidden="true"></i>
                 break;
             case 'blocked':
@@ -27,7 +27,7 @@ class Activity extends React.Component {
     getStatusClass() {
         let className;
         switch (this.props.type) {
-            case 'complete':
+            case 'completed':
                 className = 'light-green';
                 break;
             case 'blocked':

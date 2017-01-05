@@ -19,7 +19,7 @@ class ColorScale extends React.Component {
         let data = this.props.activities;
 
         let total = data.length;
-        let completed = _.filter(data, {activity_type: 'complete'}).length;
+        let completed = _.filter(data, {activity_type: 'completed'}).length;
         let progress = $('.challenge-block-container#' + this.props.id + ' .ui.progress');
         let percent = (completed / data.length) * 100;
         progress.progress('reset');
@@ -59,7 +59,7 @@ class ColorScale extends React.Component {
         let data = this.props.activities;
 
 
-        let completed = _.filter(data, {activity_type: 'complete'}).length;
+        let completed = _.filter(data, {activity_type: 'completed'}).length;
         let percent = (completed / data.length) * 100;
         switch (true) {
             case(percent >= 80):

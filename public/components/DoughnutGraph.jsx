@@ -9,7 +9,7 @@ class DoughnutGraph extends React.Component {
     }
 
     renderD3(id) {
-        let keys = ['complete','blocked', 'started'];
+        let keys = ['completed','blocked', 'started'];
         let dataSet = _.groupBy(this.props.activities, 'activity_type');
         let arrayOfDiffs = _.difference(keys,_.keys(dataSet));
         arrayOfDiffs.forEach(function(aKey){
