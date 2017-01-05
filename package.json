@@ -1,7 +1,7 @@
 {
-  "name": "timer_app",
+  "name": "Cerebro DBC",
   "version": "1.0.0",
-  "author": "Fullstack.io",
+  "author": "DBC",
   "scripts": {
     "go": "open http://localhost:3000; npm run server",
     "e2e": "nightwatch; npm run reset-data;",
