@@ -53848,7 +53848,7 @@
 	var environment = exports.environment = ("production");
 	//COmment
 	// export const backend = process.env.BACKEND_URI || 'http://cerebro-be.herokuapp.com/';
-	var backend = exports.backend = ("http://localhost:3000/") || 'http://cerebro-be.herokuapp.com/';
+	var backend = exports.backend = ("http://localhost:3000/") || 'https://cerebro-be.herokuapp.com/';
 	
 	var analytics = exports.analytics = {
 	    // https://analytics.google.com/
