@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "8f33fd03874fb4285bd4"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "cd1eea8a603813fdf8e9"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -570,7 +570,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/";
+/******/ 	__webpack_require__.p = "/cerebro-dbc/";
 /******/
 /******/ 	// __webpack_hash__
 /******/ 	__webpack_require__.h = function() { return hotCurrentHash; };
@@ -615,6 +615,10 @@
 	
 	var _DisplayOptionsMenu2 = _interopRequireDefault(_DisplayOptionsMenu);
 	
+	var _FilterBar = __webpack_require__(290);
+	
+	var _FilterBar2 = _interopRequireDefault(_FilterBar);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -624,7 +628,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var client = __webpack_require__(283);
-	var particlesConfig = __webpack_require__(290);
+	var particlesConfig = __webpack_require__(291);
 	
 	var CohortsDashboard = function (_React$Component) {
 	    _inherits(CohortsDashboard, _React$Component);
@@ -751,12 +755,12 @@
 	            return _react2.default.createElement(
 	                'div',
 	                null,
-	                _react2.default.createElement(_DisplayOptionsMenu2.default, { pickPhaseDay: this.pickPhaseDay, setAnalyticViewType: this.setAnalyticView,
+	                _react2.default.createElement(_FilterBar2.default, { pickPhaseDay: this.pickPhaseDay, setAnalyticViewType: this.setAnalyticView,
 	                    pickCohort: this.pickCohort, pickStudent: this.pickStudent }),
 	                this.state.analyticView,
 	                _react2.default.createElement(
 	                    'div',
-	                    { className: 'ui five column doubling stackable grid', style: { margin: 'auto' } },
+	                    { id: 'stats-container', className: 'ui five column doubling stackable grid', style: { margin: 'auto' } },
 	                    lists
 	                )
 	            );
@@ -21334,7 +21338,7 @@
 	            } else {
 	                return _react2.default.createElement(
 	                    'div',
-	                    { key: this.props.person, className: 'column' },
+	                    { key: this.props.person, className: 'column table-container' },
 	                    _react2.default.createElement(_UserActivityGraphsHeader2.default, { setGraphType: this.setGraphType,
 	                        person: this.props.person,
 	                        activities: this.props.activities }),
@@ -21401,7 +21405,7 @@
 	        value: function getIcon() {
 	            var icon = void 0;
 	            switch (this.props.type) {
-	                case 'complete':
+	                case 'completed':
 	                    icon = _react2.default.createElement('i', { className: 'fa fa-check', 'aria-hidden': 'true' });
 	                    break;
 	                case 'blocked':
@@ -21421,7 +21425,7 @@
 	        value: function getStatusClass() {
 	            var className = void 0;
 	            switch (this.props.type) {
-	                case 'complete':
+	                case 'completed':
 	                    className = 'light-green';
 	                    break;
 	                case 'blocked':
@@ -21634,7 +21638,7 @@
 	    _createClass(DoughnutGraph, [{
 	        key: 'renderD3',
 	        value: function renderD3(id) {
-	            var keys = ['complete', 'blocked', 'started'];
+	            var keys = ['completed', 'blocked', 'started'];
 	            var dataSet = _.groupBy(this.props.activities, 'activity_type');
 	            var arrayOfDiffs = _.difference(keys, _.keys(dataSet));
 	            arrayOfDiffs.forEach(function (aKey) {
@@ -21747,7 +21751,7 @@
 	            var data = this.props.activities;
 	
 	            var total = data.length;
-	            var completed = _lodash2.default.filter(data, { activity_type: 'complete' }).length;
+	            var completed = _lodash2.default.filter(data, { activity_type: 'completed' }).length;
 	            var progress = $('.challenge-block-container#' + this.props.id + ' .ui.progress');
 	            var percent = completed / data.length * 100;
 	            progress.progress('reset');
@@ -21785,7 +21789,7 @@
 	
 	            var data = this.props.activities;
 	
-	            var completed = _lodash2.default.filter(data, { activity_type: 'complete' }).length;
+	            var completed = _lodash2.default.filter(data, { activity_type: 'completed' }).length;
 	            var percent = completed / data.length * 100;
 	            switch (true) {
 	                case percent >= 80:
@@ -53848,7 +53852,7 @@
 	var environment = exports.environment = ("production");
 	//COmment
 	// export const backend = process.env.BACKEND_URI || 'http://cerebro-be.herokuapp.com/';
-	var backend = exports.backend = ("http://localhost:3000/") || 'https://cerebro-be.herokuapp.com/';
+	var backend = exports.backend = ("localhost:3000/") || 'https://cerebro-be.herokuapp.com/';
 	
 	var analytics = exports.analytics = {
 	    // https://analytics.google.com/
@@ -54078,7 +54082,7 @@
 	        value: function render() {
 	            return _react2.default.createElement(
 	                'div',
-	                { className: 'ui search', id: 'cohort-search' },
+	                { className: 'ui item search', id: 'cohort-search' },
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: 'ui icon input' },
@@ -54175,7 +54179,7 @@
 	        value: function render() {
 	            return _react2.default.createElement(
 	                'div',
-	                { className: 'ui search', id: 'student-search' },
+	                { className: 'ui item search', id: 'student-search' },
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: 'ui icon input' },
@@ -54495,6 +54499,120 @@
 
 /***/ },
 /* 290 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _CohortPicker = __webpack_require__(286);
+	
+	var _CohortPicker2 = _interopRequireDefault(_CohortPicker);
+	
+	var _StudentPicker = __webpack_require__(287);
+	
+	var _StudentPicker2 = _interopRequireDefault(_StudentPicker);
+	
+	var _PhaseWeekDayPicker = __webpack_require__(288);
+	
+	var _PhaseWeekDayPicker2 = _interopRequireDefault(_PhaseWeekDayPicker);
+	
+	var _RangeDatePicker = __webpack_require__(289);
+	
+	var _RangeDatePicker2 = _interopRequireDefault(_RangeDatePicker);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var FilterBar = function (_React$Component) {
+	    _inherits(FilterBar, _React$Component);
+	
+	    function FilterBar(props) {
+	        _classCallCheck(this, FilterBar);
+	
+	        var _this = _possibleConstructorReturn(this, (FilterBar.__proto__ || Object.getPrototypeOf(FilterBar)).call(this, props));
+	
+	        _this.state = {
+	            isOpen: false
+	        };
+	        _this.toggleCohortView = _this.toggleCohortView.bind(_this);
+	        _this.toggleSettings = _this.toggleSettings.bind(_this);
+	        _this.toggleStudentView = _this.toggleStudentView.bind(_this);
+	        return _this;
+	    }
+	
+	    _createClass(FilterBar, [{
+	        key: 'toggleCohortView',
+	        value: function toggleCohortView() {
+	            this.props.setAnalyticViewType('cohort');
+	        }
+	    }, {
+	        key: 'toggleStudentView',
+	        value: function toggleStudentView() {
+	            this.props.setAnalyticViewType('student');
+	        }
+	    }, {
+	        key: 'toggleSettings',
+	        value: function toggleSettings() {
+	            this.setState({ isOpen: !this.state.isOpen });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                { className: 'ui menu inverted', id: 'filter-bar' },
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'item' },
+	                    _react2.default.createElement(
+	                        'button',
+	                        { id: 'cohorts-button', className: 'ui inverted button', onClick: this.toggleCohortView },
+	                        _react2.default.createElement('i', {
+	                            className: 'users icon' })
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'item' },
+	                    _react2.default.createElement(
+	                        'button',
+	                        { id: 'cohorts-button', className: 'ui inverted button', onClick: this.toggleStudentView },
+	                        _react2.default.createElement('i', {
+	                            className: 'user icon' })
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'right menu' },
+	                    _react2.default.createElement(_StudentPicker2.default, { pickStudent: this.props.pickStudent }),
+	                    _react2.default.createElement(_CohortPicker2.default, { pickCohort: this.props.pickCohort })
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return FilterBar;
+	}(_react2.default.Component);
+	
+	;
+	exports.default = FilterBar;
+
+/***/ },
+/* 291 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -54610,4 +54728,4 @@
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=app.8f33fd03874fb4285bd4.js.map
+//# sourceMappingURL=app.cd1eea8a603813fdf8e9.js.map

@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "8f33fd03874fb4285bd4"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "cd1eea8a603813fdf8e9"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -570,7 +570,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/";
+/******/ 	__webpack_require__.p = "/cerebro-dbc/";
 /******/
 /******/ 	// __webpack_hash__
 /******/ 	__webpack_require__.h = function() { return hotCurrentHash; };
@@ -587,4 +587,4 @@
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=style.8f33fd03874fb4285bd4.js.map
+//# sourceMappingURL=style.cd1eea8a603813fdf8e9.js.map
