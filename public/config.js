@@ -22,7 +22,7 @@ console.log(process);
 export const environment = process.env.NODE_ENV;
 //COmment
 // export const backend = process.env.BACKEND_URI || 'http://cerebro-be.herokuapp.com/';
-export const backend = process.env.BACKEND_URI || 'http://cerebro-be.herokuapp.com/';
+export const backend = process.env.BACKEND_URI || 'https://cerebro-be.herokuapp.com/';
 
 
 export const analytics = {
